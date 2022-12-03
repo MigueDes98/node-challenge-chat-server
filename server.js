@@ -3,6 +3,7 @@ const cors = require("cors");
 
 const app = express();
 const bodyParser = require("body-parser");
+const { request } = require("express");
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -11,6 +12,7 @@ const welcomeMessage = {
   id: 0,
   from: "Bart",
   text: "Welcome to CYF chat system!",
+  sendDate: new Date(),
 };
 
 //This array is our "data store".
@@ -35,6 +37,7 @@ app.listen(3000, () => {
   const newMessage = {
     id: newId, 
     ...req.body,
+    sendDate: new Date(),
   };
   messages.push(newMessage);
   res.json(newMessage);  
@@ -52,6 +55,12 @@ app.get("/messages/:messages_id", (req, res) => {
 
   app.post("/messages",(req, res) => {
   const newId = messages.length > 0 ? messages[messages.length - 1].id + 1: 0;
+  if (!request.body.from){
+    return res.status(400).json("From not valid");
+  }
+  if (!request.body.text){
+    return res.status(400).json("Text not valid");
+  }
   const newMessage = {
     id: newId, 
     ...req.body,
@@ -68,5 +77,4 @@ app.delete("/messages/:messages_id", (req, res) => {
     res.status(200).json(messages);
   } else {
     res.status(404).send("Not Found");
-  }
-});
+  }});
