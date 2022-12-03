@@ -2,8 +2,10 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-
+const bodyParser = require("body-parser");
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 const welcomeMessage = {
   id: 0,
@@ -22,4 +24,8 @@ app.get("/", function (request, response) {
 
 app.listen(3000, () => {
    console.log("Listening on port 3000")
+  });
+
+  app.get("/messages", function(req, res){
+    res.json(messages);
   });
