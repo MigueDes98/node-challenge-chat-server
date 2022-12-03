@@ -29,3 +29,44 @@ app.listen(3000, () => {
   app.get("/messages", function(req, res){
     res.json(messages);
   });
+
+  app.post("/messages",(req, res) => {
+  const newId = messages.length > 0 ? messages[messages.length - 1].id + 1: 0;
+  const newMessage = {
+    id: newId, 
+    ...req.body,
+  };
+  messages.push(newMessage);
+  res.json(newMessage);  
+});
+
+app.get("/messages/:messages_id", (req, res) => {
+  const messagesId = req.params.messages_id;
+  const result = messages.find((q) => q.id == messagesId);
+  if (result) {
+    res.status(200).json(result);
+  } else {
+    res.status(404).send("Not Found");
+  }
+});
+
+  app.post("/messages",(req, res) => {
+  const newId = messages.length > 0 ? messages[messages.length - 1].id + 1: 0;
+  const newMessage = {
+    id: newId, 
+    ...req.body,
+  };
+  messages.push(newMessage);
+  res.json(newMessage);  
+});
+
+app.delete("/messages/:messages_id", (req, res) => {
+  const messagesId = req.params.messages_id;
+  const messagesIdx = messages.findIndex((q) => q.id == messagesId);
+  if (messagesIdx > -1) {
+    messages.splice(messagesId, 1);
+    res.status(200).json(messages);
+  } else {
+    res.status(404).send("Not Found");
+  }
+});
